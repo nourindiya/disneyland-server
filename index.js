@@ -35,7 +35,7 @@ async function run() {
         })
 
 
-        // Post Api
+
         app.post('/activities', async (req, res) => {
             const activity = req.body;
             const result = await activitessCollection.insertOne(activity)
@@ -83,6 +83,21 @@ async function run() {
             res.json(result);
         });
 
+
+        // set order approval
+        app.put('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const status = req.body.status;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: status
+                },
+            };
+            const result = await ordersCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+        });
 
         // Delete Api
         app.delete("/orders/:id", async (req, res) => {
